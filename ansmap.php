@@ -106,6 +106,45 @@ function ansmap_draw_text(&$amp, $txt, $x, $y) {
     }
 }
 
+function ansmap_create_from_text($txt) {
+    $lines = explode("\n", $txt);
+    $sym_y = 0;
+
+    $width = 0;
+    $height = 0;
+    $rows = array();
+
+    foreach ($lines as $line) {
+        $symbols = mb_str_split($line);
+        $sym_x = 0;
+
+        $cells = array();
+
+        foreach ($symbols as $sym) {
+            $cells[] = $sym;
+            $sym_x++;
+
+            $width = max($width, $sym_x);
+        }
+
+        $rows[] = $cells;
+
+        $sym_y++;
+
+        $height = max($height, $sym_y);
+    }
+
+    $amp = ansmap_create($width, $height);
+
+    for ($y = 0; $y < count($rows); ++$y) {
+        for ($x = 0; $x < count($rows[$y]); ++$x) {
+            ansmap_draw_symbol($amp, $rows[$y][$x], $x, $y);
+        }
+    }
+
+    return $amp;
+}
+
 function ansmap_to_string(&$amp) {
     $str = "";
 
@@ -120,8 +159,7 @@ function ansmap_to_string(&$amp) {
     return $str;
 }
 
-$amp_yolo = ansmap_create(4, 1);
-ansmap_draw_text($amp_yolo, "YOLO", 0, 0);
+$amp_yolo = ansmap_create_from_text("YOLO");
 
 $amp_screen = ansmap_create(80, 20);
 ansmap_blit($amp_yolo, $amp_screen, 0, 0, 40, 10, 4, 1);
