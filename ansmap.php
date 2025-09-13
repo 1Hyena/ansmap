@@ -527,21 +527,3 @@ function ansmap_channel_clear(&$amp, $channel) {
         }
     }
 }
-
-$amp = ansmap_create_from_texts(
-    "    Ww    wW  CC\n".
-    "    yyyyyyyy  CC\n".
-    "    yyrRGGrR  yy\n".
-    "    DDGGGGGG  yy\n".
-    "yyDDyyDDyyDDyyGG\n".
-    "GGGGDDyyDDyy  yy\n".
-    "  rrrrrrrrrr  yy\n".
-    "  DD      DD  yy\n",
-    "YOLO YOLO YOLOY LOLO ä ö õ ü",
-    "RGBDMCRGBMCYYYYyyyyYRRR",
-    "PPPP"
-);
-
-ansmap_draw_text($amp, "WTF", 0, 0, array("underline", "italic", "strikethrough", "faint", "blinking"));
-
-echo ansmap_to_string($amp);
