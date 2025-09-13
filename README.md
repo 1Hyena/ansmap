@@ -16,6 +16,10 @@ https://github.com/1Hyena/ansmap/blob/84a20863ff1234b6e1b42e7d8bd559196c99155e/e
 
 ![screenshot](examples/ex-background.png "console output of ex-background.php")
 
+https://github.com/1Hyena/ansmap/blob/f71bcb62fbb2cba008a016bec8cca769a622005d/examples/ex-sprite.php#L27-L40
+
+![screenshot](examples/ex-sprite.png "console output of ex-sprite.php")
+
 # License ######################################################################
 
 The AnsMap Library has been authored by Erich Erstu and is released under the
