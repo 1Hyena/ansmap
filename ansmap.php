@@ -21,6 +21,54 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+function ansmap_lookup_channel_value($channel, $value) {
+    $mapping = array(
+        "background" => array(
+            "d" => array("bg"   => 40),
+            "r" => array("bg"   => 41),
+            "g" => array("bg"   => 42),
+            "y" => array("bg"   => 43),
+            "b" => array("bg"   => 44),
+            "m" => array("bg"   => 45),
+            "c" => array("bg"   => 46),
+            "w" => array("bg"   => 47),
+            "D" => array("bold" => 1, "fg" => 30, "inverse" => 7),
+            "R" => array("bold" => 1, "fg" => 31, "inverse" => 7),
+            "G" => array("bold" => 1, "fg" => 32, "inverse" => 7),
+            "Y" => array("bold" => 1, "fg" => 33, "inverse" => 7),
+            "B" => array("bold" => 1, "fg" => 34, "inverse" => 7),
+            "M" => array("bold" => 1, "fg" => 35, "inverse" => 7),
+            "C" => array("bold" => 1, "fg" => 36, "inverse" => 7),
+            "W" => array("bold" => 1, "fg" => 37, "inverse" => 7)
+        ),
+        "foreground" => array(
+            "d" => array("fg"   => 30),
+            "r" => array("fg"   => 31),
+            "g" => array("fg"   => 32),
+            "y" => array("fg"   => 33),
+            "b" => array("fg"   => 34),
+            "m" => array("fg"   => 35),
+            "c" => array("fg"   => 36),
+            "w" => array("fg"   => 37),
+            "D" => array("bold" => 1, "fg" => 30),
+            "R" => array("bold" => 1, "fg" => 31),
+            "G" => array("bold" => 1, "fg" => 32),
+            "Y" => array("bold" => 1, "fg" => 33),
+            "B" => array("bold" => 1, "fg" => 34),
+            "M" => array("bold" => 1, "fg" => 35),
+            "C" => array("bold" => 1, "fg" => 36),
+            "W" => array("bold" => 1, "fg" => 37)
+        )
+    );
+
+    return (
+        array_key_exists($channel, $mapping) &&
+        array_key_exists($value, $mapping[$channel]) ? (
+            $mapping[$channel][$value]
+        ) : array()
+    );
+}
+
 function ansmap_create($width, $height) {
     $ansmap = array();
 
@@ -278,7 +326,45 @@ function ansmap_to_string(&$amp) {
 
     for ($y = 0; $y < $h; ++$y) {
         for ($x = 0; $x < $w; ++$x) {
+            $ansicodes = array();
+
+            foreach ($amp[$y][$x] as $chan => $value) {
+                $nextcodes = ansmap_lookup_channel_value($chan, $value);
+
+                if (array_key_exists("inverse", $nextcodes)
+                && !array_key_exists("inverse", $ansicodes)) {
+                    if (array_key_exists("fg", $ansicodes)) {
+                        $ansicodes["bg"] = $ansicodes["fg"] + 10;
+                        unset($ansicodes["fg"]);
+                    }
+                }
+
+                if (array_key_exists("inverse", $ansicodes)
+                && !array_key_exists("inverse", $nextcodes)) {
+                    if (array_key_exists("fg", $nextcodes)) {
+                        $nextcodes["bg"] = $nextcodes["fg"] + 10;
+                        unset($nextcodes["fg"]);
+                    }
+                }
+
+                $ansicodes = array_merge($ansicodes, $nextcodes);
+            }
+
+            $sequence = array();
+
+            foreach ($ansicodes as $key => $value) {
+                $sequence[] = $value;
+            }
+
+            if (count($sequence) > 0) {
+                $str .= "\x1B[".implode(";", $sequence)."m";
+            }
+
             $str .= $amp[$y][$x]["symbol"];
+
+            if (count($sequence) > 0) {
+                $str .= "\x1B[0m";
+            }
         }
 
         $str .= "\r\n";
@@ -317,7 +403,7 @@ function ansmap_channel_clear(&$amp, $channel) {
     }
 }
 
-$amp_yolo = ansmap_create_from_texts("DDDD", "YOLO", "RGBW");
+$amp_yolo = ansmap_create_from_texts("DbDD", "YOLO", "RGBW");
 
 $amp_screen = ansmap_create(80, 20);
 ansmap_blit($amp_yolo, $amp_screen, 0, 0, 40, 10, 4, 1);
