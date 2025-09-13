@@ -8,7 +8,7 @@ sequences.
 
 # Examples #####################################################################
 
-https://github.com/1Hyena/ansmap/blob/a22750a0cf41e99fe7f00650230efcfe39618dc8/examples/ex-hello.php#L5-7
+https://github.com/1Hyena/ansmap/blob/a22750a0cf41e99fe7f00650230efcfe39618dc8/examples/ex-hello.php#L5-L7
 
 
 # License ######################################################################
