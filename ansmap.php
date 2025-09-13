@@ -21,7 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-function ansmap_lookup_channel_value($channel, $value) {
+
+function ansmap_channel_get_cipher($channel) {
     $mapping = array(
         "background" => array(
             "d" => array("bg"   => 40),
@@ -58,15 +59,69 @@ function ansmap_lookup_channel_value($channel, $value) {
             "M" => array("bold" => 1, "fg" => 35),
             "C" => array("bold" => 1, "fg" => 36),
             "W" => array("bold" => 1, "fg" => 37)
+        ),
+        "decoration" => array(
+            "#" => array("hidden"           => 8),
+            "?" => array("faint"            => 2),
+            "/" => array("italic"           => 3),
+            "_" => array("underline"        => 4),
+            "*" => array("blinking"         => 5),
+            "-" => array("strikethrough"    => 9),
+            "0" => array("blinking" => 5, "strikethrough" => 9),
+            "1" => array("underline" => 4, "strikethrough" => 9),
+            "2" => array("underline" => 4, "blinking" => 5),
+            "3" => array(
+                "underline" => 4, "blinking" => 5, "strikethrough" => 9
+            ),
+            "4" => array("italic" => 3, "strikethrough" => 9),
+            "5" => array("italic" => 3, "blinking" => 5),
+            "6" => array("italic" => 3, "blinking" => 5, "strikethrough" => 9),
+            "7" => array("italic" => 3, "underline" => 4),
+            "8" => array("italic" => 3, "underline" => 4, "strikethrough" => 9),
+            "9" => array("italic" => 3, "underline" => 4, "blinking" => 5),
+            "A" => array(
+                "italic" => 3, "underline" => 4, "blinking" => 5,
+                "strikethrough" => 9
+            ),
+            "B" => array("faint" => 2, "strikethrough" => 9),
+            "C" => array("faint" => 2, "blinking" => 5),
+            "D" => array("faint" => 2, "blinking" => 5, "strikethrough" => 9),
+            "E" => array("faint" => 2, "underline" => 4),
+            "F" => array("faint" => 2, "underline" => 4, "strikethrough" => 9),
+            "G" => array("faint" => 2, "underline" => 4, "blinking" => 5 ),
+            "H" => array(
+                "faint" => 2, "underline" => 4, "blinking" => 5,
+                "strikethrough" => 9
+            ),
+            "I" => array("faint" => 2, "italic" => 3 ),
+            "J" => array("faint" => 2, "italic" => 3, "strikethrough" => 9),
+            "K" => array("faint" => 2, "italic" => 3, "blinking" => 5),
+            "L" => array(
+                "faint" => 2, "italic" => 3, "blinking" => 5,
+                "strikethrough" => 9
+            ),
+            "M" => array("faint" => 2, "italic" => 3, "underline" => 4),
+            "N" => array(
+                "faint" => 2, "italic" => 3, "underline" => 4,
+                "strikethrough" => 9
+            ),
+            "O" => array(
+                "faint" => 2, "italic" => 3, "underline" => 4, "blinking" => 5
+            ),
+            "P" => array(
+                "faint" => 2, "italic" => 3, "underline" => 4, "blinking" => 5,
+                "strikethrough" => 9
+            )
         )
     );
 
-    return (
-        array_key_exists($channel, $mapping) &&
-        array_key_exists($value, $mapping[$channel]) ? (
-            $mapping[$channel][$value]
-        ) : array()
-    );
+    return array_key_exists($channel, $mapping) ? $mapping[$channel] : array();
+}
+
+function ansmap_channel_decode($channel, $value) {
+    $mapping = ansmap_channel_get_cipher($channel);
+
+    return array_key_exists($value, $mapping) ? $mapping[$value] : array();
 }
 
 function ansmap_create($width, $height) {
@@ -98,7 +153,7 @@ function ansmap_cell_create() {
         "symbol"        => " ",
         "background"    => " ",
         "foreground"    => " ",
-        "style"         => " "
+        "decoration"    => " "
     );
 }
 
@@ -232,9 +287,43 @@ function ansmap_channel_set_value(&$amp, $channel, $value, $x, $y) {
     $amp[$y][$x][$channel] = $value;
 }
 
-function ansmap_draw_text(&$amp, $txt, $x, $y) {
+function ansmap_draw_text(&$amp, $txt, $x, $y, $decoration = null) {
     $lines = explode("\n", $txt);
     $sym_y = $y;
+
+    if (is_array($decoration)) {
+        $cipher = ansmap_channel_get_cipher("decoration");
+        $best_score = null;
+        $best_key = " ";
+
+        if (in_array("hidden", $decoration, true)) {
+            $decoration = array("hidden");
+        }
+
+        foreach ($cipher as $key => $dict) {
+            $score = 0;
+
+            for ($i = 0; $i < count($decoration); $i++) {
+                $var = $decoration[$i];
+
+                if (array_key_exists($var, $dict)) {
+                    $score++;
+                }
+            }
+
+            if ($best_score == null || $best_score < $score) {
+                $best_key = $key;
+                $best_score = $score;
+            }
+
+            if ($score >= count($decoration)) {
+                break;
+            }
+        }
+
+        $decoration = $best_key;
+    }
+    else $decoration = " ";
 
     foreach ($lines as $line) {
         $symbols = mb_str_split($line);
@@ -242,6 +331,10 @@ function ansmap_draw_text(&$amp, $txt, $x, $y) {
 
         foreach ($symbols as $sym) {
             ansmap_channel_set_value($amp, "symbol", $sym, $sym_x, $sym_y);
+            ansmap_channel_set_value(
+                $amp, "decoration", $decoration, $sym_x, $sym_y
+            );
+
             $sym_x++;
         }
 
@@ -289,32 +382,32 @@ function ansmap_create_from_text($txt, $channel = "symbol") {
 }
 
 function ansmap_create_from_texts(
-    $background_colors, $symbols = "", $foreground_colors = "", $style = ""
+    $background_colors, $symbols = "", $foreground_colors = "", $decoration = ""
 ) {
     $amp_bgc = ansmap_create_from_text($background_colors,  "background");
     $amp_sym = ansmap_create_from_text($symbols,            "symbol");
     $amp_fgc = ansmap_create_from_text($foreground_colors,  "foreground");
-    $amp_sty = ansmap_create_from_text($style,              "style");
+    $amp_dec = ansmap_create_from_text($decoration,         "decoration");
 
     $amp = ansmap_create(
         max(
             ansmap_get_width($amp_bgc),
             ansmap_get_width($amp_sym),
             ansmap_get_width($amp_fgc),
-            ansmap_get_width($amp_sty)
+            ansmap_get_width($amp_dec)
         ),
         max(
             ansmap_get_height($amp_bgc),
             ansmap_get_height($amp_sym),
             ansmap_get_height($amp_fgc),
-            ansmap_get_height($amp_sty)
+            ansmap_get_height($amp_dec)
         )
     );
 
     ansmap_draw_sprite($amp, $amp_bgc, 0, 0);
     ansmap_draw_sprite($amp, $amp_sym, 0, 0);
     ansmap_draw_sprite($amp, $amp_fgc, 0, 0);
-    ansmap_draw_sprite($amp, $amp_sty, 0, 0);
+    ansmap_draw_sprite($amp, $amp_dec, 0, 0);
 
     return $amp;
 }
@@ -325,46 +418,78 @@ function ansmap_to_string(&$amp) {
     $w = ansmap_get_width($amp);
 
     for ($y = 0; $y < $h; ++$y) {
+        $line_setup = array();
+
         for ($x = 0; $x < $w; ++$x) {
-            $ansicodes = array();
+            $next_setup = array();
 
             foreach ($amp[$y][$x] as $chan => $value) {
-                $nextcodes = ansmap_lookup_channel_value($chan, $value);
+                $chan_setup = ansmap_channel_decode($chan, $value);
 
-                if (array_key_exists("inverse", $nextcodes)
-                && !array_key_exists("inverse", $ansicodes)) {
-                    if (array_key_exists("fg", $ansicodes)) {
-                        $ansicodes["bg"] = $ansicodes["fg"] + 10;
-                        unset($ansicodes["fg"]);
+                if (array_key_exists("inverse", $chan_setup)
+                && !array_key_exists("inverse", $next_setup)) {
+                    if (array_key_exists("fg", $next_setup)) {
+                        $next_setup["bg"] = $next_setup["fg"] + 10;
+                        unset($next_setup["fg"]);
                     }
                 }
 
-                if (array_key_exists("inverse", $ansicodes)
-                && !array_key_exists("inverse", $nextcodes)) {
-                    if (array_key_exists("fg", $nextcodes)) {
-                        $nextcodes["bg"] = $nextcodes["fg"] + 10;
-                        unset($nextcodes["fg"]);
+                if (array_key_exists("inverse", $next_setup)
+                && !array_key_exists("inverse", $chan_setup)) {
+                    if (array_key_exists("fg", $chan_setup)) {
+                        $chan_setup["bg"] = $chan_setup["fg"] + 10;
+                        unset($chan_setup["fg"]);
                     }
                 }
 
-                $ansicodes = array_merge($ansicodes, $nextcodes);
+                $next_setup = array_merge($next_setup, $chan_setup);
             }
 
+            $reset = false;
             $sequence = array();
 
-            foreach ($ansicodes as $key => $value) {
-                $sequence[] = $value;
+            foreach ($line_setup as $key => $value) {
+                if (!array_key_exists($key, $next_setup)) {
+                    $reset = true;
+                    break;
+                }
+            }
+
+            if ($reset == false) {
+                foreach ($next_setup as $key => $value) {
+                    if (!array_key_exists($key, $line_setup)
+                    || $line_setup[$key] !== $value) {
+                        $sequence[] = $value;
+                    }
+                }
+            }
+            else {
+                foreach ($next_setup as $key => $value) {
+                    $sequence[] = $value;
+                }
             }
 
             if (count($sequence) > 0) {
-                $str .= "\x1B[".implode(";", $sequence)."m";
+                $str .= "\x1B[".($reset ? "0;" : "").implode(
+                    ";", $sequence
+                )."m";
+            }
+            else if ($reset) {
+                $str .= "\x1B[0m";
             }
 
             $str .= $amp[$y][$x]["symbol"];
 
-            if (count($sequence) > 0) {
-                $str .= "\x1B[0m";
+            if ($reset) {
+                $line_setup = $next_setup;
             }
+            else {
+                $line_setup = array_merge($line_setup, $next_setup);
+            }
+        }
+
+        if (!empty($line_setup)) {
+            $str .= "\x1B[0m";
         }
 
         $str .= "\r\n";
@@ -411,7 +536,12 @@ $amp = ansmap_create_from_texts(
     "yyDDyyDDyyDDyyGG\n".
     "GGGGDDyyDDyy  yy\n".
     "  rrrrrrrrrr  yy\n".
-    "  DD      DD  yy\n"
+    "  DD      DD  yy\n",
+    "YOLO YOLO YOLOY LOLO ä ö õ ü",
+    "RGBDMCRGBMCYYYYyyyyYRRR",
+    "PPPP"
 );
+
+ansmap_draw_text($amp, "WTF", 0, 0, array("underline", "italic", "strikethrough", "faint", "blinking"));
 
 echo ansmap_to_string($amp);
