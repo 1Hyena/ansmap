@@ -250,7 +250,7 @@ function ansmap_draw_text(&$amp, $txt, $x, $y) {
 }
 
 function ansmap_create_from_text($txt, $channel = "symbol") {
-    $lines = explode("\n", $txt);
+    $lines = explode("\n", rtrim($txt, "\n"));
     $sym_y = 0;
 
     $width = 0;
@@ -403,9 +403,15 @@ function ansmap_channel_clear(&$amp, $channel) {
     }
 }
 
-$amp_yolo = ansmap_create_from_texts("DbDD", "YOLO", "RGBW");
+$amp = ansmap_create_from_texts(
+    "    Ww    wW  CC\n".
+    "    yyyyyyyy  CC\n".
+    "    yyrRGGrR  yy\n".
+    "    DDGGGGGG  yy\n".
+    "yyDDyyDDyyDDyyGG\n".
+    "GGGGDDyyDDyy  yy\n".
+    "  rrrrrrrrrr  yy\n".
+    "  DD      DD  yy\n"
+);
 
-$amp_screen = ansmap_create(80, 20);
-ansmap_blit($amp_yolo, $amp_screen, 0, 0, 40, 10, 4, 1);
-
-echo ansmap_to_string($amp_screen);
+echo ansmap_to_string($amp);
