@@ -22,95 +22,107 @@
 // SOFTWARE.
 
 
+function ansmap_get_ansi_code_table() {
+    return array(
+        "black"         => 30,
+        "red"           => 31,
+        "green"         => 32,
+        "yellow"        => 33,
+        "blue"          => 34,
+        "magenta"       => 35,
+        "cyan"          => 36,
+        "white"         => 37,
+        "black-bg"      => 40,
+        "red-bg"        => 41,
+        "green-bg"      => 42,
+        "yellow-bg"     => 43,
+        "blue-bg"       => 44,
+        "magenta-bg"    => 45,
+        "cyan-bg"       => 46,
+        "white-bg"      => 47,
+        "bold"          => 1,
+        "inverse"       => 7,
+        "hidden"        => 8,
+        "faint"         => 2,
+        "italic"        => 3,
+        "underline"     => 4,
+        "blinking"      => 5,
+        "strikethrough" => 9
+    );
+}
+
 function ansmap_channel_get_cipher($channel) {
     $mapping = array(
         "background" => array(
-            "d" => array("bg"   => 40),
-            "r" => array("bg"   => 41),
-            "g" => array("bg"   => 42),
-            "y" => array("bg"   => 43),
-            "b" => array("bg"   => 44),
-            "m" => array("bg"   => 45),
-            "c" => array("bg"   => 46),
-            "w" => array("bg"   => 47),
-            "D" => array("bold" => 1, "fg" => 30, "inverse" => 7),
-            "R" => array("bold" => 1, "fg" => 31, "inverse" => 7),
-            "G" => array("bold" => 1, "fg" => 32, "inverse" => 7),
-            "Y" => array("bold" => 1, "fg" => 33, "inverse" => 7),
-            "B" => array("bold" => 1, "fg" => 34, "inverse" => 7),
-            "M" => array("bold" => 1, "fg" => 35, "inverse" => 7),
-            "C" => array("bold" => 1, "fg" => 36, "inverse" => 7),
-            "W" => array("bold" => 1, "fg" => 37, "inverse" => 7)
+            "d" => array("black-bg"),
+            "r" => array("red-bg"),
+            "g" => array("green-bg"),
+            "y" => array("yellow-bg"),
+            "b" => array("blue-bg"),
+            "m" => array("magenta-bg"),
+            "c" => array("cyan-bg"),
+            "w" => array("white-bg"),
+            "D" => array("inverse", "bold", "black"),
+            "R" => array("inverse", "bold", "red"),
+            "G" => array("inverse", "bold", "green"),
+            "Y" => array("inverse", "bold", "yellow"),
+            "B" => array("inverse", "bold", "blue"),
+            "M" => array("inverse", "bold", "magenta"),
+            "C" => array("inverse", "bold", "cyan"),
+            "W" => array("inverse", "bold", "white")
         ),
         "foreground" => array(
-            "d" => array("fg"   => 30),
-            "r" => array("fg"   => 31),
-            "g" => array("fg"   => 32),
-            "y" => array("fg"   => 33),
-            "b" => array("fg"   => 34),
-            "m" => array("fg"   => 35),
-            "c" => array("fg"   => 36),
-            "w" => array("fg"   => 37),
-            "D" => array("bold" => 1, "fg" => 30),
-            "R" => array("bold" => 1, "fg" => 31),
-            "G" => array("bold" => 1, "fg" => 32),
-            "Y" => array("bold" => 1, "fg" => 33),
-            "B" => array("bold" => 1, "fg" => 34),
-            "M" => array("bold" => 1, "fg" => 35),
-            "C" => array("bold" => 1, "fg" => 36),
-            "W" => array("bold" => 1, "fg" => 37)
+            "d" => array("black"),
+            "r" => array("red"),
+            "g" => array("green"),
+            "y" => array("yellow"),
+            "b" => array("blue"),
+            "m" => array("magenta"),
+            "c" => array("cyan"),
+            "w" => array("white"),
+            "D" => array("bold", "black"),
+            "R" => array("bold", "red"),
+            "G" => array("bold", "green"),
+            "Y" => array("bold", "yellow"),
+            "B" => array("bold", "blue"),
+            "M" => array("bold", "magenta"),
+            "C" => array("bold", "cyan"),
+            "W" => array("bold", "white")
         ),
         "decoration" => array(
-            "#" => array("hidden"           => 8),
-            "?" => array("faint"            => 2),
-            "/" => array("italic"           => 3),
-            "_" => array("underline"        => 4),
-            "*" => array("blinking"         => 5),
-            "-" => array("strikethrough"    => 9),
-            "0" => array("blinking" => 5, "strikethrough" => 9),
-            "1" => array("underline" => 4, "strikethrough" => 9),
-            "2" => array("underline" => 4, "blinking" => 5),
-            "3" => array(
-                "underline" => 4, "blinking" => 5, "strikethrough" => 9
-            ),
-            "4" => array("italic" => 3, "strikethrough" => 9),
-            "5" => array("italic" => 3, "blinking" => 5),
-            "6" => array("italic" => 3, "blinking" => 5, "strikethrough" => 9),
-            "7" => array("italic" => 3, "underline" => 4),
-            "8" => array("italic" => 3, "underline" => 4, "strikethrough" => 9),
-            "9" => array("italic" => 3, "underline" => 4, "blinking" => 5),
-            "A" => array(
-                "italic" => 3, "underline" => 4, "blinking" => 5,
-                "strikethrough" => 9
-            ),
-            "B" => array("faint" => 2, "strikethrough" => 9),
-            "C" => array("faint" => 2, "blinking" => 5),
-            "D" => array("faint" => 2, "blinking" => 5, "strikethrough" => 9),
-            "E" => array("faint" => 2, "underline" => 4),
-            "F" => array("faint" => 2, "underline" => 4, "strikethrough" => 9),
-            "G" => array("faint" => 2, "underline" => 4, "blinking" => 5 ),
-            "H" => array(
-                "faint" => 2, "underline" => 4, "blinking" => 5,
-                "strikethrough" => 9
-            ),
-            "I" => array("faint" => 2, "italic" => 3 ),
-            "J" => array("faint" => 2, "italic" => 3, "strikethrough" => 9),
-            "K" => array("faint" => 2, "italic" => 3, "blinking" => 5),
-            "L" => array(
-                "faint" => 2, "italic" => 3, "blinking" => 5,
-                "strikethrough" => 9
-            ),
-            "M" => array("faint" => 2, "italic" => 3, "underline" => 4),
-            "N" => array(
-                "faint" => 2, "italic" => 3, "underline" => 4,
-                "strikethrough" => 9
-            ),
-            "O" => array(
-                "faint" => 2, "italic" => 3, "underline" => 4, "blinking" => 5
-            ),
+            "#" => array("hidden"),
+            "?" => array("faint"),
+            "/" => array("italic"),
+            "_" => array("underline"),
+            "*" => array("blinking"),
+            "-" => array("strikethrough"),
+            "0" => array("blinking", "strikethrough"),
+            "1" => array("underline", "strikethrough"),
+            "2" => array("underline", "blinking"),
+            "3" => array("underline", "blinking", "strikethrough"),
+            "4" => array("italic", "strikethrough"),
+            "5" => array("italic", "blinking"),
+            "6" => array("italic", "blinking", "strikethrough"),
+            "7" => array("italic", "underline"),
+            "8" => array("italic", "underline", "strikethrough"),
+            "9" => array("italic", "underline", "blinking"),
+            "A" => array("italic", "underline", "blinking", "strikethrough"),
+            "B" => array("faint", "strikethrough"),
+            "C" => array("faint", "blinking"),
+            "D" => array("faint", "blinking", "strikethrough"),
+            "E" => array("faint", "underline"),
+            "F" => array("faint", "underline", "strikethrough"),
+            "G" => array("faint", "underline", "blinking" ),
+            "H" => array("faint", "underline", "blinking", "strikethrough"),
+            "I" => array("faint", "italic" ),
+            "J" => array("faint", "italic", "strikethrough"),
+            "K" => array("faint", "italic", "blinking"),
+            "L" => array("faint", "italic", "blinking", "strikethrough"),
+            "M" => array("faint", "italic", "underline"),
+            "N" => array("faint", "italic", "underline","strikethrough"),
+            "O" => array("faint", "italic", "underline", "blinking"),
             "P" => array(
-                "faint" => 2, "italic" => 3, "underline" => 4, "blinking" => 5,
-                "strikethrough" => 9
+                "faint", "italic", "underline", "blinking","strikethrough"
             )
         )
     );
@@ -120,8 +132,29 @@ function ansmap_channel_get_cipher($channel) {
 
 function ansmap_channel_decode($channel, $value) {
     $mapping = ansmap_channel_get_cipher($channel);
+    $decoded = array();
 
-    return array_key_exists($value, $mapping) ? $mapping[$value] : array();
+    if (array_key_exists($value, $mapping)) {
+        $code_table = ansmap_get_ansi_code_table();
+
+        foreach ($mapping[$value] as $codename) {
+            if (array_key_exists($codename, $code_table)) {
+                $code = $code_table[$codename];
+
+                if ($code >= 30 && $code <= 37) {
+                    $decoded["fg"] = $code;
+                }
+                else if ($code >= 40 && $code <= 47) {
+                    $decoded["bg"] = $code;
+                }
+                else {
+                    $decoded[$codename] = $code;
+                }
+            }
+        }
+    }
+
+    return $decoded;
 }
 
 function ansmap_create($width, $height) {
@@ -287,24 +320,25 @@ function ansmap_channel_set_value(&$amp, $channel, $value, $x, $y) {
     $amp[$y][$x][$channel] = $value;
 }
 
-function ansmap_draw_text(&$amp, $txt, $x, $y, $decoration = null) {
+function ansmap_draw_text(&$amp, $txt, $x, $y, ...$styles) {
     $lines = explode("\n", $txt);
     $sym_y = $y;
+    $decoration = " ";
 
-    if (is_array($decoration)) {
-        $cipher = ansmap_channel_get_cipher("decoration");
+    if (is_array($styles)) {
+        $cipher = ansmap_channel_get_cipher("styles");
         $best_score = null;
         $best_key = " ";
 
-        if (in_array("hidden", $decoration, true)) {
-            $decoration = array("hidden");
+        if (in_array("hidden", $styles, true)) {
+            $styles = array("hidden");
         }
 
         foreach ($cipher as $key => $dict) {
             $score = 0;
 
-            for ($i = 0; $i < count($decoration); $i++) {
-                $var = $decoration[$i];
+            for ($i = 0; $i < count($styles); $i++) {
+                $var = $styles[$i];
 
                 if (array_key_exists($var, $dict)) {
                     $score++;
@@ -316,14 +350,13 @@ function ansmap_draw_text(&$amp, $txt, $x, $y, $decoration = null) {
                 $best_score = $score;
             }
 
-            if ($score >= count($decoration)) {
+            if ($score >= count($styles)) {
                 break;
             }
         }
 
-        $decoration = $best_key;
+        $styles = $best_key;
     }
-    else $decoration = " ";
 
     foreach ($lines as $line) {
         $symbols = mb_str_split($line);
