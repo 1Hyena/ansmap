@@ -10,8 +10,8 @@ $palette = array(
     "b" => array(  0,  0,128),
     "m" => array(128,  0,128),
     "c" => array(  0,128,128),
-    "w" => array(128,128,128),
-    "D" => array( 64, 64, 64),
+    "w" => array(192,192,192),
+    "D" => array(128,128,128),
     "R" => array(255,  0,  0),
     "G" => array(  0,255,  0),
     "Y" => array(255,255,  0),
@@ -78,21 +78,68 @@ function palette_lookup(&$pal, $r, $g, $b) {
     return $pal[$best_index];
 }
 
+function lerp_rgb_array($colors) {
+    $lerped = array();
+
+    for ($i = 0; $i < count($colors); ++$i) {
+        $c1 = $colors[$i];
+
+        $lerped[] = $c1;
+
+        $c2 = $colors[($i + 1) % count($colors)];
+
+        $lerped[] = array(
+            ($c1[0] + $c2[0])/2, ($c1[1] + $c2[1])/2, ($c1[2] + $c2[2])/2
+        );
+    }
+
+    return $lerped;
+}
+
 $dither_palette = generate_dither_palette($palette, $dither);
+
+$middle = array(
+    array(255,   0,   0),
+    array(255, 255,   0),
+    array(  0, 255,   0),
+    array(  0, 255, 255),
+    array(  0,   0, 255),
+    array(255,   0, 255)
+);
+
+$middle = lerp_rgb_array($middle);
+$middle = lerp_rgb_array($middle);
 
 $txt = "";
 $txt_bg = "";
 $txt_fg = "";
+$width = 80;
 
-for ($r = 0; $r <= 256; $r += 32) {
-    for ($g = 0; $g <= 256; $g += 32) {
-        for ($b = 0; $b <= 256; $b += 32) {
-            $info = palette_lookup($dither_palette, $r, $g, $b);
-            $txt_bg .= $info["bgc"];
-            $txt_fg .= $info["fgc"];
-            $txt .= $info["sym"];
-        }
+for ($y = 0; $y < count($middle); ++$y) {
+    for ($x = 0, $w = $width / 2; $x < $w; ++$x) {
+        $p = $x / $w;
 
+        $r = $middle[$y][0] * $p;
+        $g = $middle[$y][1] * $p;
+        $b = $middle[$y][2] * $p;
+
+        $info = palette_lookup($dither_palette, $r, $g, $b);
+        $txt_bg .= $info["bgc"];
+        $txt_fg .= $info["fgc"];
+        $txt .= $info["sym"];
+    }
+
+    for ($x = 0, $w = $width / 2; $x < $w; ++$x) {
+        $p = $x / $w;
+
+        $r = $middle[$y][0] * (1 - $p) + $p * 255;
+        $g = $middle[$y][1] * (1 - $p) + $p * 255;
+        $b = $middle[$y][2] * (1 - $p) + $p * 255;
+
+        $info = palette_lookup($dither_palette, $r, $g, $b);
+        $txt_bg .= $info["bgc"];
+        $txt_fg .= $info["fgc"];
+        $txt .= $info["sym"];
     }
 
     $txt_bg .= "\n";
