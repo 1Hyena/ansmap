@@ -24,7 +24,7 @@ https://github.com/1Hyena/ansmap/blob/332b010fc706dfa4540f5590080ebccfb975aa81/e
 
 ![screenshot](img/ex-drawtext.png "console output of ex-drawtext.php")
 
-https://github.com/1Hyena/ansmap/blob/e80bc442daf91d69059e380f61c4f40d198bf640/examples/ex-dither.php#L87-L101
+https://github.com/1Hyena/ansmap/blob/master/examples/ex-palette.php
 
 ![screenshot](img/ex-palette.png "console output of ex-palette.php")
 
