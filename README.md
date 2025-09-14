@@ -26,7 +26,7 @@ https://github.com/1Hyena/ansmap/blob/332b010fc706dfa4540f5590080ebccfb975aa81/e
 
 https://github.com/1Hyena/ansmap/blob/e80bc442daf91d69059e380f61c4f40d198bf640/examples/ex-dither.php#L87-L101
 
-![screenshot](img/ex-dither.png "console output of ex-dither.php")
+![screenshot](img/ex-palette.png "console output of ex-palette.php")
 
 # License ######################################################################
 
