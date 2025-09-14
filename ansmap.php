@@ -320,42 +320,87 @@ function ansmap_channel_set_value(&$amp, $channel, $value, $x, $y) {
     $amp[$y][$x][$channel] = $value;
 }
 
-function ansmap_draw_text(&$amp, $txt, $x, $y, ...$styles) {
+function ansmap_draw_text(&$amp, $txt, $x, $y, ...$txt_styles) {
     $lines = explode("\n", $txt);
     $sym_y = $y;
     $decoration = " ";
 
-    if (is_array($styles)) {
-        $cipher = ansmap_channel_get_cipher("styles");
+    $style_to_channel_map = array(
+        "bold"          => "foreground",
+        "black"         => "foreground",
+        "red"           => "foreground",
+        "green"         => "foreground",
+        "yellow"        => "foreground",
+        "blue"          => "foreground",
+        "magenta"       => "foreground",
+        "cyan"          => "foreground",
+        "white"         => "foreground",
+        "black-bg"      => "background",
+        "red-bg"        => "background",
+        "green-bg"      => "background",
+        "yellow-bg"     => "background",
+        "blue-bg"       => "background",
+        "magenta-bg"    => "background",
+        "cyan-bg"       => "background",
+        "white-bg"      => "background",
+        "hidden"        => "decoration",
+        "faint"         => "decoration",
+        "italic"        => "decoration",
+        "underline"     => "decoration",
+        "blinking"      => "decoration",
+        "strikethrough" => "decoration"
+    );
+
+    $channel_to_styles_map = array();
+    $channel_to_cipher_key = array();
+
+    foreach ($txt_styles as $style) {
+        if (!array_key_exists($style, $style_to_channel_map)) {
+            continue;
+        }
+
+        $channel = $style_to_channel_map[$style];
+
+        if (!array_key_exists($channel, $channel_to_styles_map)) {
+            $channel_to_styles_map[$channel] = array();
+        }
+
+        $channel_to_styles_map[$channel][] = $style;
+    }
+
+    if (array_key_exists("decoration", $channel_to_styles_map)
+    && in_array("hidden", $channel_to_styles_map["decoration"], true)) {
+        // No text decoration is needed if the text is hidden anyway.
+        $channel_to_styles_map["decoration"] = array("hidden");
+    }
+
+    foreach ($channel_to_styles_map as $channel_name => $channel_styles) {
+        $cipher = ansmap_channel_get_cipher($channel_name);
         $best_score = null;
         $best_key = " ";
 
-        if (in_array("hidden", $styles, true)) {
-            $styles = array("hidden");
-        }
-
-        foreach ($cipher as $key => $dict) {
+        foreach ($cipher as $cipher_key => $cipher_styles) {
             $score = 0;
 
-            for ($i = 0; $i < count($styles); $i++) {
-                $var = $styles[$i];
+            for ($i = 0; $i < count($channel_styles); $i++) {
+                $var = $channel_styles[$i];
 
-                if (array_key_exists($var, $dict)) {
+                if (in_array($var, $cipher_styles, true)) {
                     $score++;
                 }
             }
 
             if ($best_score == null || $best_score < $score) {
-                $best_key = $key;
+                $best_key = $cipher_key;
                 $best_score = $score;
             }
 
-            if ($score >= count($styles)) {
+            if ($score >= count($channel_styles)) {
                 break;
             }
         }
 
-        $styles = $best_key;
+        $channel_to_cipher_key[$channel_name] = $best_key;
     }
 
     foreach ($lines as $line) {
@@ -364,9 +409,12 @@ function ansmap_draw_text(&$amp, $txt, $x, $y, ...$styles) {
 
         foreach ($symbols as $sym) {
             ansmap_channel_set_value($amp, "symbol", $sym, $sym_x, $sym_y);
-            ansmap_channel_set_value(
-                $amp, "decoration", $decoration, $sym_x, $sym_y
-            );
+
+            foreach ($channel_to_cipher_key as $channel_name => $cipher_key) {
+                ansmap_channel_set_value(
+                    $amp, $channel_name, $cipher_key, $sym_x, $sym_y
+                );
+            }
 
             $sym_x++;
         }
