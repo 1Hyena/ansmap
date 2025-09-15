@@ -55,6 +55,7 @@ output.
 
 ![screenshot](img/amp2ans.png "console output of amp2ans.php")
 
+![screenshot](img/punisher.png "ANSI art from the punisher.amp file")
 
 # License ######################################################################
 
