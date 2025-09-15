@@ -41,6 +41,13 @@ https://github.com/1Hyena/ansmap/blob/332b010fc706dfa4540f5590080ebccfb975aa81/e
 [ex-palette.php](https://github.com/1Hyena/ansmap/blob/master/examples/ex-palette.php)
 
 
+# Demos ########################################################################
+
+![screenshot](img/amp2ans.png "console output of amp2ans.php")
+
+[amp2ans.php](https://github.com/1Hyena/ansmap/blob/master/demo/amp2ans.php)
+
+
 # License ######################################################################
 
 The AnsMap Library has been authored by Erich Erstu and is released under the
