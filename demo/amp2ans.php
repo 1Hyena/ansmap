@@ -5,7 +5,7 @@ require_once("../ansmap.php");
 if (count($argv) <= 1) {
     exit(
         "synopsis: php amp2ans.php FILE\n".
-        "example:  php ".$argv[0]." demo.amp\n"
+        "example:  php ".$argv[0]." punisher.amp\n"
     );
 }
 
