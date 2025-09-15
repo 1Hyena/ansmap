@@ -47,13 +47,16 @@ https://github.com/1Hyena/ansmap/blob/332b010fc706dfa4540f5590080ebccfb975aa81/e
 
 The amp2ans demo shows off the ansmap (AMP) file format and how such files could
 be converted into ANSI escape sequences for the terminal to display. In the
-below screenshot the file contents of _demo.amp_ are first shown. Then, that
+below screenshot the file contents of _mud.amp_ is shown. Then, that
 file is given as an input to the
 [amp2ans.php](https://github.com/1Hyena/ansmap/blob/master/demo/amp2ans.php)
 script which will write the respective ANSI escape sequences into its standard
 output.
 
 ![screenshot](img/amp2ans.png "console output of amp2ans.php")
+
+In the following screenshot the [punisher.amp](demo/punisher.amp) file from the
+_demo_ directory has been given as an input to the _amp2ans.php_ script.
 
 ![screenshot](img/punisher.png "ANSI art from the punisher.amp file")
 
