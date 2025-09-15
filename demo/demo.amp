@@ -1,0 +1,28 @@
+Health: Perfect > east
+        |        The southern hills
+ ---#   ^---+---   You find yourself from the rolling hills of the Shire, a
+    |   |        peaceful land inhabited by hobbits. The quaint hobbit dwellings
+    ^---@        dot the landscape, their round doors welcoming visitors with a
+    |            sense of warmth and hospitality. The air is filled with the ...
+    ?
+                 Exits: north  west
+    The corpse of a sheep is lying here.
+A large black wolf is here, fighting a dog.
+(Bleeding) A dog is here, fighting a large black wolf.
+
+Health: Perfect >
+#AMP_FOREGROUND
+                  yyyy
+        D
+ DDD         DDD   DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+                 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+                 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+                 DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+
+                 gggggggggggggggggg
+    cccccccccccccccccccccccccccccccccccc
+YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+(RrRrRrRr) YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+#AMP_DECORATION
+                  ////
+                 __________________
